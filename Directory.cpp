@@ -67,3 +67,46 @@ void Directory::splitBucket(int bucketKey)
 
     this->buckets[getPairIndex(bucketKey)] = temp;
 }
+
+void Directory::search(string key)
+{
+    int index = getPrefix(key,this->globalDepth);
+    if(this->buckets[index]->search(key))
+    {
+        cout << "Chave " << key << " encontrada no hash" << endl;
+    }
+    else
+    {
+        cout << "Chave " << key << " não encontrada" << endl;
+    }
+}
+
+void Directory::insert(string key)
+{
+    int index = getPrefix(key,this->globalDepth);
+    if(!this->buckets[index]->search(key))
+    {
+        if(this->buckets[index]->getUsedSize() < this->bucketSize)
+        {
+            this->buckets[index]->insert(key);
+        }
+        else
+        {
+            if(this->buckets[index]->getLocalDepth() == this->globalDepth)
+            {
+                this->duplicateDirectory();
+                this->splitBucket(index);
+                this->buckets[index]->insert(key);
+            }
+            else
+            {
+                this->splitBucket(index);
+                this->buckets[index]->insert(key);
+            }
+        }
+    }
+    else
+    {
+        cout << "Chave já presente no hash" << endl;
+    }
+}

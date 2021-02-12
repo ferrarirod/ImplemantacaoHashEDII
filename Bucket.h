@@ -18,10 +18,11 @@ public:
     ~Bucket();
     bool insert(string key);
     void remove(string key);
-    void search(string key);
+    bool search(string key);
     int increaseDepth();
     int getLocalDepth();
     string getKey(int index);
+    int getUsedSize();
 };
 
 #endif
