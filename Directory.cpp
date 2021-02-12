@@ -79,7 +79,7 @@ void Directory::splitBucket(int bucketKey)
 {
     Bucket *temp = new Bucket(this->buckets[bucketKey]->getLocalDepth() + 1,this->bucketSize);
     this->buckets[bucketKey]->increaseDepth();
-    for(int i = 0;i < this->bucketSize; i++)
+    for(int i = 0;i < this->buckets[bucketKey]->getUsedSize(); i++)
     {
         if(getPrefix(this->buckets[bucketKey]->getKey(i),this->buckets[bucketKey]->getLocalDepth()) != getPrefix(binaryIndex(bucketKey),this->buckets[bucketKey]->getLocalDepth()))
         {
@@ -142,14 +142,14 @@ void Directory::insert(string key)
         {
             if(this->buckets[index]->getLocalDepth() == this->globalDepth)
             {
+                this->buckets[index]->insert(key);
                 this->duplicateDirectory();
                 this->splitBucket(index);
-                this->buckets[index]->insert(key);
             }
             else
             {
-                this->splitBucket(index);
                 this->buckets[index]->insert(key);
+                this->splitBucket(index);
             }
         }
     }
