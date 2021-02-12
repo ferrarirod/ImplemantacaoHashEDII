@@ -17,8 +17,11 @@ public:
     Bucket(int depth,int size);
     ~Bucket();
     bool insert(string key);
+    void remove(string key);
     void search(string key);
     int increaseDepth();
+    int getLocalDepth();
+    string getKey(int index);
 };
 
 #endif
