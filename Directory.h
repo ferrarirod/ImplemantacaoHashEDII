@@ -18,7 +18,8 @@ private:
     void splitBucket(int bucket_key);
     void duplicateDirectory();
     int getPrefix(string key,int depth);
-    int getPairIndex(int key);
+    //int getPairIndex(int key);
+    string binaryIndex(int index);
 public:
     Directory(int depth, int bucketSize);
     ~Directory();

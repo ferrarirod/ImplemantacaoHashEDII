@@ -24,16 +24,43 @@ int Directory::getPrefix(string key,int depth)
     return index;
 }
 
-int Directory::getPairIndex(int key)
+//int Directory::getPairIndex(int key)
+//{
+//    if(key % 2 == 0)
+//    {
+//        return key + 1;
+//    }
+//    else
+//    {
+//        return key - 1;
+//    }
+//}
+
+string Directory::binaryIndex(int index)
 {
-    if(key % 2 == 0)
+    int quotient = index;
+    int bynary[this->globalDepth];
+    string bynStr;
+    for(int i = 0; i < this->globalDepth;i++)
     {
-        return key + 1;
+        bynary[i] = 0;
     }
-    else
+    int i = this->globalDepth - 1;
+    while(quotient != 0)
     {
-        return key - 1;
+        int remainder = quotient % 2;
+        bynary[i] = remainder;
+        quotient = quotient/2;
+        i--;    
     }
+
+    bynStr = to_string(bynary[0]);
+    for(int i = 1;i < this->globalDepth;i++)
+    {
+        bynStr += to_string(bynary[i]);
+    }
+
+    return bynStr;
 }
 
 void Directory::duplicateDirectory()
@@ -54,10 +81,9 @@ void Directory::splitBucket(int bucketKey)
     this->buckets[bucketKey]->increaseDepth();
     for(int i = 0;i < this->bucketSize; i++)
     {
-        if(getPrefix(this->buckets[bucketKey]->getKey(i),this->buckets[bucketKey]->getLocalDepth()) != bucketKey)
+        if(getPrefix(this->buckets[bucketKey]->getKey(i),this->buckets[bucketKey]->getLocalDepth()) != getPrefix(binaryIndex(bucketKey),this->buckets[bucketKey]->getLocalDepth()))
         {
             temp->insert(this->buckets[bucketKey]->getKey(i));
-            this->buckets[bucketKey]->remove(this->buckets[bucketKey]->getKey(i));
         }
         else
         {
@@ -65,7 +91,29 @@ void Directory::splitBucket(int bucketKey)
         }
     }
 
-    this->buckets[getPairIndex(bucketKey)] = temp;
+    for(int i = 0;i < temp->getUsedSize(); i++)
+    {
+        this->buckets[bucketKey]->remove(temp->getKey(i));
+    }
+
+    for(int i = 0; i < this->buckets.size(); i++)
+    {
+        if(this->buckets[i] == this->buckets[bucketKey])
+        {
+            if(getPrefix(binaryIndex(i),this->buckets[bucketKey]->getLocalDepth()) != getPrefix(binaryIndex(bucketKey),this->buckets[bucketKey]->getLocalDepth()))
+            {
+                this->buckets[i] = temp;
+            }
+            else
+            {
+                continue;
+            }
+        }
+        else
+        {
+            continue;
+        }
+    }
 }
 
 void Directory::search(string key)

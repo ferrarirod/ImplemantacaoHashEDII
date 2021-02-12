@@ -16,10 +16,10 @@ private:
 public:
     Bucket(int depth,int size);
     ~Bucket();
-    bool insert(string key);
+    void insert(string key);
     void remove(string key);
     bool search(string key);
-    int increaseDepth();
+    void increaseDepth();
     int getLocalDepth();
     string getKey(int index);
     int getUsedSize();
