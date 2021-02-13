@@ -4,9 +4,16 @@ Directory::Directory(int depth,int bucketSize)
 {
     this->globalDepth = depth;
     this->bucketSize = bucketSize;
+    this->allocatedKeys = 0;
+    this->avaliableSpaces = 0;
+    this->bucketsAllocated = 0;
+    this->pointersAllocated = 0;
     for(int i = 0; i < 1 << this->globalDepth;i++)
     {
         this->buckets.push_back(new Bucket(this->globalDepth,bucketSize));
+        this->avaliableSpaces += bucketSize;
+        this->pointersAllocated++;
+        this->bucketsAllocated++;
     }
 }
 
@@ -23,18 +30,6 @@ int Directory::getPrefix(string key,int depth)
 
     return index;
 }
-
-//int Directory::getPairIndex(int key)
-//{
-//    if(key % 2 == 0)
-//    {
-//        return key + 1;
-//    }
-//    else
-//    {
-//        return key - 1;
-//    }
-//}
 
 string Directory::binaryIndex(int index)
 {
@@ -70,6 +65,7 @@ void Directory::duplicateDirectory()
     {
         temp.push_back(buckets[i]);
         temp.push_back(buckets[i]);
+        this->pointersAllocated++;
     }
     this->buckets = temp;
     this->globalDepth++;
@@ -78,6 +74,8 @@ void Directory::duplicateDirectory()
 void Directory::splitBucket(int bucketKey)
 {
     Bucket *temp = new Bucket(this->buckets[bucketKey]->getLocalDepth() + 1,this->bucketSize);
+    this->bucketsAllocated++;
+    this->avaliableSpaces += this->bucketSize;
     this->buckets[bucketKey]->increaseDepth();
     for(int i = 0;i < this->buckets[bucketKey]->getUsedSize(); i++)
     {
@@ -137,6 +135,7 @@ void Directory::insert(string key)
         if(this->buckets[index]->getUsedSize() < this->bucketSize)
         {
             this->buckets[index]->insert(key);
+            this->allocatedKeys++;
         }
         else
         {
@@ -145,11 +144,13 @@ void Directory::insert(string key)
                 this->buckets[index]->insert(key);
                 this->duplicateDirectory();
                 this->splitBucket(index);
+                this->allocatedKeys++;
             }
             else
             {
                 this->buckets[index]->insert(key);
                 this->splitBucket(index);
+                this->allocatedKeys++;
             }
         }
     }
@@ -157,4 +158,24 @@ void Directory::insert(string key)
     {
         cout << "Chave já presente no hash" << endl;
     }
+}
+
+float Directory::getAllocatedKeys()
+{
+    return this->allocatedKeys;
+}
+
+float Directory::getAvaliableSpaces()
+{
+    return this->avaliableSpaces;
+}
+
+float Directory::getBucketsAllocated()
+{
+    return this->bucketsAllocated;
+}
+
+float Directory::getPointersAllocated()
+{
+    return this->pointersAllocated;
 }

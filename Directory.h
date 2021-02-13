@@ -14,17 +14,24 @@ class Directory
 private:
     int globalDepth;
     int bucketSize;
+    float allocatedKeys;
+    float avaliableSpaces;
+    float pointersAllocated;
+    float bucketsAllocated;
     vector<Bucket*> buckets;
     void splitBucket(int bucket_key);
     void duplicateDirectory();
     int getPrefix(string key,int depth);
-    //int getPairIndex(int key);
     string binaryIndex(int index);
 public:
     Directory(int depth, int bucketSize);
     ~Directory();
     void insert(string key);
     void search(string key);
+    float getAllocatedKeys();
+    float getAvaliableSpaces();
+    float getPointersAllocated();
+    float getBucketsAllocated();
 };
 
 #endif
