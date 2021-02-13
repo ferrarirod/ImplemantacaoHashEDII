@@ -25,7 +25,7 @@ string intToString(unsigned int number,int bitNumber)
     }
 
     bynStr = to_string(bynary[0]);
-    for(int i = 1;i < 9;i++)
+    for(int i = 1;i < bitNumber;i++)
     {
         bynStr += to_string(bynary[i]);
     }
@@ -89,7 +89,7 @@ void standardizedInsertionTest(int keyNumber,int bitNumber,int bucketSize)
     float pointerAllocation[5];
     float bucketAllocation[5];
     string randomKeys[keyNumber];
-    int maxNumber = pow(2,bitNumber/2) - 1;
+    int maxNumber = pow(2,bitNumber - 5) - 1;
     Directory *dir;
     ofstream outfile("saidas.txt",ios::app);
 
@@ -159,6 +159,7 @@ int main()
         cout << "0 - Encerrar execução" << endl;
         cout << "Selecione sua opção: ";
         int option;
+        int number;
         cin >> option;
         switch (option)
         {
@@ -173,7 +174,6 @@ int main()
             break;
         case 2:
             cout << "Digite uma chave em decimal (valor não pode ultrapassar " << pow(2,bitNumber) - 1 << "): ";
-            int number;
             cin >> number;
             if(number <= pow(2,bitNumber) - 1)
             {
@@ -188,7 +188,6 @@ int main()
             break;
         case 3:
             cout << "Digite uma chave em decimal (valor não pode ultrapassar " << pow(2,bitNumber) - 1 << "): ";
-            int number;
             cin >> number;
             if(number <= pow(2,bitNumber) - 1)
             {
